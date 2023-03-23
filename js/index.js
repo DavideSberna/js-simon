@@ -16,80 +16,171 @@ Consigli del giorno:
 
 COSTRUZIONE PROGRAMMA:
 
-1. Creare funzione math.random per numeri random.
-2. Creare array di numeri random,
-3. Creare elemento input 
-4. verificare i valori random con quelli inseriti nell'input.value
+
 */
 
 const btn = document.querySelector("button");
+
 const ulList = document.querySelector("#ul-list");
+let contInput = document.querySelector("#container-input");
+let resultOutPut = document.querySelector("#result-outPut");
+let inputALL = document.querySelectorAll(".form-control");
 
-// let inputALL = document.querySelectorAll("#num-1");
 
 
-let input1 = document.querySelector("#num-1");
-let input2 = document.querySelector("#num-2");
-let input3 = document.querySelector("#num-3");
-let input4 = document.querySelector("#num-4");
-let input5 = document.querySelector("#num-5");
-
+let min = 1;
 let numNumber = 5
 let maxRange = 100
+
+btn.addEventListener("click", ValidationNumbers)
+
+
+// Funzione creazione array con num random
+function createArrRandom(){
+let arrRandomNum = [];
+while(arrRandomNum.length < numNumber){
+    let random = getRandomInt(min, maxRange)
+    if(!arrRandomNum.includes(random)){
+        arrRandomNum.push(random)
+    }
+}
+for(let j = 0; j < arrRandomNum.length; j++){
+        let listRandom = document.createElement("span")
+        listRandom.classList.add("p-2")
+        listRandom.innerHTML = arrRandomNum[j];
+        ulList.appendChild(listRandom)
+        Timer(listRandom)
+    }
+return arrRandomNum
  
-btn.addEventListener("click", checkValueInput)
+}
+ 
+let arrRandom = createArrRandom();
+console.log("arrRandom", arrRandom)
 
 
 
-function randomNumberArray(){
-    let arrayNum = []
-    while(arrayNum.length < numNumber){
-        let random = getRandomInt(1, maxRange)
-        if(!arrayNum.includes(random)){
-            arrayNum.push(random)
+// Funzione per stampare a video la lista con numeri random
+function createArrInput(){
+    let arrInputNum = [];
+    let correctInputValue;
+    for(let i = 0; i < inputALL.length; i++){
+        if(!arrInputNum.includes(inputALL[i].value) && inputALL[i].value !== "" && parseInt(inputALL[i].value)){
+            arrInputNum.push(inputALL[i].value)
+            correctInputValue = true
+            
         }
     }
-    return arrayNum
-}
- 
- 
-
-// const showNumber = setInterval(showNumbers, 3000)
-function showNumbers(){
-    const randomF = randomNumberArray()
-    for(let i = 0; i < randomF.length; i++){
-        let element = document.createElement("li")
-        element.innerHTML = randomF[i];
-        ulList.appendChild(element)
-        Timer(element)
-        
-        checkValueInput(randomF[i])
-         
+    if(!correctInputValue){
+        alert("campi vuoti")
+        correctInputValue = false
+        return correctInputValue;
+    }else{
+        return arrInputNum;    
     }
-     
-}
-showNumbers()
-
-function Timer(element){
-    setTimeout(function() { 
-        element.remove(); 
-      }, 10000 );
-      
-
 }
 
-
-function checkValueInput(randomF){
-    
-   
  
+// creazine elemento Dom da appendere al risultato
+function createElemResults(arrCorrectNum, levelResuts){
+    let elem = document.createElement("li")
+    elem.innerHTML = "";
+    elem.classList.add("list-group-item")
+    if(levelResuts === "null"){
+        elem.innerHTML = `
+                            <li>Hai indovitato i numeri: ${arrCorrectNum}</li>
+                            <li>Punteggio: ${arrCorrectNum.length}</li>
+                         ` 
+        resultOutPut.appendChild(elem)
+    } else{
+        if(levelResuts == 1){
+            elem.innerHTML = `
+                                <li class="list-group-item">Mi spiace, non ne hai indovinata mezza</li>
+                                
+                             ` 
+            resultOutPut.appendChild(elem)
+    
+        } else if(levelResuts == 2){
+            elem.innerHTML = `
+                                <li>Hai indovitato i numeri: ${arrCorrectNum}</li>
+                                <li>Punteggio: ${arrCorrectNum.length}</li>
+                                
+                             ` 
+            resultOutPut.appendChild(elem)
+    
+        } else{
+            elem.innerHTML = `
+                                <li>O ma sei un fenomeno!</li>
+                                <li>Hai indovitato i numeri: ${arrCorrectNum}</li>
+                                <li>Punteggio: ${arrCorrectNum.length}</li>
+                                
+                             ` 
+            resultOutPut.appendChild(elem)
+        }
+    }
+
+
 }
-// function checkValueInput(){
-//     for(let j= 0; j < inputALL.length; j++){
-//         let indexInput = inputALL[j].value
-//         console.log(indexInput)
-//     }
-// }
+
+
+
+
+
+
+// Funzione per stampare a video la lista con numeri random
+function ValidationNumbers(){
+    
+    let arrinput = createArrInput();
+    let arrCorrectNum = [];
+    let levelResuts;
+    let showResult = false;
+    for(let x = 0; x <arrinput.length; x++){
+        if(arrRandom.includes(parseInt(arrinput[x]))){
+            arrCorrectNum.push(arrinput[x])
+            showResult = true;
+    
+        }  
+    } 
+
+    if(!arrinput){
+        levelResuts = "null";
+        elemResult = createElemResults(arrCorrectNum, levelResuts);
+        
+    }
+    if(showResult){ 
+        if(arrCorrectNum.length == 1){
+            levelResuts = 2;
+            elemResult = createElemResults(arrCorrectNum, levelResuts);
+        }else if(arrCorrectNum.length == 2){
+            levelResuts = 2;
+            elemResult = createElemResults(arrCorrectNum, levelResuts);
+        } else if(arrCorrectNum.length == 3){
+            levelResuts = 2;
+            elemResult = createElemResults(arrCorrectNum, levelResuts);
+        }else if(arrCorrectNum.length == 4){
+            levelResuts = 2;
+            elemResult = createElemResults(arrCorrectNum, levelResuts);
+        } else if(arrCorrectNum.length == 5){
+            levelResuts = 3;
+            elemResult = createElemResults(arrCorrectNum, levelResuts);
+        }  
+    } else{
+        levelResuts =  1;
+        elemResult = createElemResults(arrCorrectNum, levelResuts);
+
+    }
+
+}
+ 
+
+
+
+function Timer(listRandom){
+    setTimeout(function() { 
+        contInput.classList.remove("d-none")
+        listRandom.remove(); 
+      }, 2000 );
+}
 
 
 function getRandomInt(min, max) {
